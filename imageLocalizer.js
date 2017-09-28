@@ -67,8 +67,6 @@ const imageLocalizer = (content, url) => {
 
       console.log('statusCode:', res.statusCode);
 
-      // TODO If statusCode === 302 'throw' to catch block
-
       if(res.statusCode !== 200) throw imageUrl + ' does not exist. GAME OVER. ';
 
       let imageData = '';
