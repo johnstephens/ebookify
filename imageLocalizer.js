@@ -103,7 +103,7 @@ const imageLocalizer = (content, url) => {
 
         console.log(`${protocol} DID NOT WORK`);
 
-        if (res.statusCode >== 300 && res.statusCode < 400) return res.statusCode;
+        if (res.statusCode <= 300 || res.statusCode > 399) return res.statusCode;
 
         if ( protocol === 'https' ) {
 
