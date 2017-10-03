@@ -67,81 +67,94 @@ const imageLocalizer = (content, url) => {
 
       console.log('statusCode:', res.statusCode);
 
-      if(res.statusCode !== 200) throw imageUrl + ' does not exist. GAME OVER. ';
+      new Promise(function(resolve, reject) {
 
-      let imageData = '';
+        if(res.statusCode !== 200) {
+          reject();
+        } else {
+          resolve();
+        }
 
-      res.setEncoding('binary');
+      }).then(function() {
 
-      res.on('data', chunk => { imageData += chunk; });
+        let imageData = '';
 
-      res.on('end', () => {
+        res.setEncoding('binary');
 
-        fs.writeFile(imageDir + '/' + filename, imageData, 'binary', (err) => {
+        res.on('data', chunk => { imageData += chunk; });
 
-          if(err) console.error(err);
+        res.on('end', () => {
 
-          console.log('File downloaded at: ' + imageDir + '/' + filename);
+          fs.writeFile(imageDir + '/' + filename, imageData, 'binary', (err) => {
 
-          parts[i] = parts[i].replace(imageUrl, imageDir + '/' + filename);
+            if(err) console.error(err);
 
-          processParts(parts, i + 1);
+            console.log('File downloaded at: ' + imageDir + '/' + filename);
+
+            parts[i] = parts[i].replace(imageUrl, imageDir + '/' + filename);
+
+            processParts(parts, i + 1);
+
+          });
 
         });
+
+      }).catch(function() {
+
+        console.log(`${protocol} DID NOT WORK`);
+
+        if (res.statusCode >== 300 && res.statusCode < 400) return res.statusCode;
+
+        if ( protocol === 'https' ) {
+
+          console.log('TRYING HTTP');
+
+          let altImageUrl = imageUrl.replace('https', 'http');
+
+          http.get(altImageUrl, (res) => {
+            response(altImageUrl, res);
+          }).on('error', (err) => {
+            console.error(err);
+          });
+
+
+        } else if ( protocol === 'http' ) {
+
+          console.log('TRYING HTTPS');
+
+          let altImageUrl = imageUrl.replace('http', 'https');
+
+          https.get(altImageUrl, (res) => {
+            response(altImageUrl, res);
+          }).on('error', (err) => {
+            console.error(err);
+          });
+
+        }
 
       });
 
     }
 
-    if( protocol === 'https' ) {
+    if ( protocol === 'https' ) {
 
-      try {
+      console.log('THIS IS HTTPS');
 
-        https.get(imageUrl, (res) => {
-          response(imageUrl, res);
-        }).on('error', (err) => {
-          console.error(err);
-        });
+      https.get(imageUrl, (res) => {
+        response(imageUrl, res);
+      }).on('error', (err) => {
+        console.error(err);
+      });
 
-      }
+    } else if ( protocol === 'http' ) {
 
-      catch (e) {
+      console.log('THIS IS HTTP');
 
-        let altImageUrl = imageUrl.replace('https', 'http');
-
-        http.get(altImageUrl, (res) => {
-          response(altImageUrl, res);
-        }).on('error', (err) => {
-          console.error(err);
-        });
-
-      }
-
-    }
-
-    if( protocol === 'http' ) {
-
-      try {
-
-        http.get(imageUrl, (res) => {
-          response(imageUrl, res);
-        }).on('error', (err) => {
-          console.error(err);
-        });
-
-      }
-
-      catch (e) {
-
-        let altImageUrl = imageUrl.replace('http', 'https');
-
-        https.get(altImageUrl, (res) => {
-          response(altImageUrl, res);
-        }).on('error', (err) => {
-          console.error(err);
-        });
-
-      }
+      http.get(imageUrl, (res) => {
+        response(imageUrl, res);
+      }).on('error', (err) => {
+        console.error(err);
+      });
 
     }
 
