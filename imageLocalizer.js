@@ -14,10 +14,18 @@ const imageLocalizer = (content, url) => {
 
   if(!fs.existsSync(imageDir)) fs.mkdirSync(imageDir);
 
+
+
+
+
   function splitImages(content) {
     let parts = content.split(/(\<img.*?\/>)/g);
     processParts(parts, 0);
   }
+
+
+
+
 
   function processParts(parts, i) {
 
@@ -28,8 +36,6 @@ const imageLocalizer = (content, url) => {
         let imageUrl = new RegExp(/src\=["|'](.*?)["|']/).exec(parts[i])[1];
 
         if(imageUrl) {
-
-          console.log(`\n\nIMAGE URL: ${imageUrl}`);
 
           saveImage(imageUrl, parts, i);
 
@@ -54,6 +60,10 @@ const imageLocalizer = (content, url) => {
     }
 
   }
+
+
+
+
 
   function saveImage(imageUrl, parts, i) {
 
@@ -91,7 +101,9 @@ const imageLocalizer = (content, url) => {
 
             console.log('File downloaded at: ' + imageDir + '/' + filename);
 
-            parts[i] = parts[i].replace(imageUrl, imageDir + '/' + filename);
+            let thisImageUrl = new RegExp(/src\=["|'](.*?)["|']/).exec(parts[i])[1];
+
+            parts[i] = parts[i].replace(thisImageUrl, imageDir + '/' + filename);
 
             processParts(parts, i + 1);
 
@@ -101,13 +113,9 @@ const imageLocalizer = (content, url) => {
 
       }).catch(function() {
 
-        console.log(`${protocol} DID NOT WORK`);
-
-        if (res.statusCode <= 300 || res.statusCode > 399) return res.statusCode;
+        if (res.statusCode <= 300 || res.statusCode > 399) return;
 
         if ( protocol === 'https' ) {
-
-          console.log('TRYING HTTP');
 
           let altImageUrl = imageUrl.replace('https', 'http');
 
@@ -119,8 +127,6 @@ const imageLocalizer = (content, url) => {
 
 
         } else if ( protocol === 'http' ) {
-
-          console.log('TRYING HTTPS');
 
           let altImageUrl = imageUrl.replace('http', 'https');
 
@@ -138,8 +144,6 @@ const imageLocalizer = (content, url) => {
 
     if ( protocol === 'https' ) {
 
-      console.log('THIS IS HTTPS');
-
       https.get(imageUrl, (res) => {
         response(imageUrl, res);
       }).on('error', (err) => {
@@ -147,8 +151,6 @@ const imageLocalizer = (content, url) => {
       });
 
     } else if ( protocol === 'http' ) {
-
-      console.log('THIS IS HTTP');
 
       http.get(imageUrl, (res) => {
         response(imageUrl, res);
