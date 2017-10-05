@@ -4,12 +4,11 @@
  * ebookify.js
  */
 
-// const fs             = require('fs');
 const request        = require('request');
 const imageLocalizer = require('./imageLocalizer');
 
 const config         = require('./ebookify.config');
-const urls           = require('./urls.json');
+const urls           = require( process.env.PWD + '/urls.json' );
 
 
 
