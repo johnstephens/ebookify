@@ -69,6 +69,8 @@ const imageLocalizer = (content, url) => {
 
     let filename = path.basename(imageUrl);
 
+    if (imageUrl.match(/^\/\//)) imageUrl = 'https:' + imageUrl;
+
     let protocol = imageUrl.match(/^(.*?)\:/)[1];
 
     const response = (imageUrl, res) => {
@@ -80,7 +82,7 @@ const imageLocalizer = (content, url) => {
       new Promise(function(resolve, reject) {
 
         if(res.statusCode !== 200) {
-          reject();
+          reject(res.statusCode);
         } else {
           resolve();
         }
@@ -111,9 +113,13 @@ const imageLocalizer = (content, url) => {
 
         });
 
-      }).catch(function() {
+      }).catch(function(statusCode) {
 
-        if (res.statusCode <= 300 || res.statusCode > 399) return;
+        if (statusCode <= 300 || statusCode > 399) return;
+
+        // let thisProtocol = imageUrl.match(/^(.*?)\:/)[1];
+
+        // if (thisProtocol !== protocol) throw statusCode;
 
         if ( protocol === 'https' ) {
 
