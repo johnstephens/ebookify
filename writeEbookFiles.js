@@ -27,9 +27,9 @@ function writeEbookFiles(htmlfilename) {
     cover_flag = ' --cover ' + ebook_cover_url;
   }
 
-  exec(ebook_convert_path + ' ./' + htmlfilename + ' ./' + epubfilename + cover_flag + ' --preserve-cover-aspect-ratio', puts);
+  exec(ebook_convert_path + ' ./' + htmlfilename + ' ./' + epubfilename + cover_flag + ' --preserve-cover-aspect-ratio --chapter "//*[name()=\'h1\']" --page-breaks-before "//*[name()=\'h1\']"', puts);
 
-  exec(ebook_convert_path + ' ./' + htmlfilename + ' ./' + mobifilename + cover_flag + ' --output-profile kindle --no-inline-toc', puts);
+  exec(ebook_convert_path + ' ./' + htmlfilename + ' ./' + mobifilename + cover_flag + ' --output-profile kindle --no-inline-toc --chapter "//*[name()=\'h1\']" --page-breaks-before "//*[name()=\'h1\']"', puts);
 
 }
 
