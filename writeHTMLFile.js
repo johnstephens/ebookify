@@ -14,9 +14,11 @@ const nameChanger = (url) => {
 
   let basename = path.basename(url);
 
-  let argumentsRemoved = basename.replace(/\?.*?$/, '.html');
+  let argumentsRemoved = basename.replace(/\?.*?$/, '');
 
-  return argumentsRemoved;
+  let filename = argumentsRemoved + '.html';
+
+  return filename;
 
 };
 
