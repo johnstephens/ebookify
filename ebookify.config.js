@@ -4,6 +4,9 @@ module.exports = {
   'ebook_convert_path': '/usr/bin/ebook-convert',
 
   // Set URL to e-book cover image
-  'ebook_cover_url': ''
+  'ebook_cover_url': '',
+
+  // Set elements that define chapter breaks
+  'chapter_break_elements': ''
 
 };
